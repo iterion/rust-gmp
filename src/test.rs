@@ -604,4 +604,11 @@ mod mpf {
         let x = Mpf::new(0);
         &x / &x;
     }
+
+    #[test]
+    fn test_debug_fmt() {
+        let mut x = Mpf::new(0);
+        x.set_from_str("1.2", 10);
+        assert_eq!(format!("{:?}", x), "0.12e1");
+    }
 }

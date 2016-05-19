@@ -4,6 +4,7 @@ use std::cmp;
 use std::cmp::Ordering::{self, Greater, Less, Equal};
 use std::ops::{Div, Mul, Add, Sub, Neg};
 use std::ffi::CString;
+use std::fmt;
 use std::string::String;
 use super::mpz::mp_bitcnt_t;
 use super::mpz::{Mpz, mpz_srcptr};
@@ -331,6 +332,31 @@ impl Neg for Mpf {
             __gmpf_neg(&mut self.mpf, &self.mpf);
             self
         }
+    }
+}
+
+impl fmt::Debug for Mpf {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let mut cp = self.clone();
+        let mut e: c_long = 0;
+        let chars = {
+            let eb = &mut e;
+            cp.get_str(0, 10, eb)
+        };
+        let fd = format!("0.{}e{}", chars, e);
+        f.write_str(&fd);
+        Ok(())
+    }
+}
+
+impl fmt::Display for Mpf {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let mut cp = self.clone();
+        let mut e: i64 = 0;
+        let chars = cp.get_str(0, 10, &mut e);
+        let fd = format!("0.{}e{}", chars, e);
+        f.write_str(&fd);
+        Ok(())
     }
 }
 
